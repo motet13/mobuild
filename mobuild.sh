@@ -96,20 +96,22 @@ for i in $(ls templates); do
 #    cp templates/$i ~/.vim/templates
 done
 
-# Download Vundle.vim
+
+# Download Vundle.vim if not installed else exit
 # Insert recommended Vundle settings in .vimrc
 # copy original .vimrc first
-vundle='git clone https://github.com/VundleVim/Vundle.vim.git ~/bin/mobuild/vimconf/bundle/Vundle.vim'
-echo -e "$grn [ Cloning ] $gry" $vundle
+if [ -d "~/bin/mobuild/vimconf/bundle/Vundle.vim" ]; then
+    echo "Vundle.vim is already install."
+else
+    vundle='git clone https://github.com/VundleVim/Vundle.vim.git ~/bin/mobuild/vimconf/bundle/Vundle.vim'
+    echo -e "$grn [ Cloning ] $gry" $vundle
 
-#testing only [change path when ready]
-cp vimconf/.vimrc vimconf/.vimrc_old
-
-cat vimconf/vim_template vimconf/.vimrc > vimconf/tmprc
-
-cp vimconf/tmprc vimconf/.vimrc
-
-> ~/bin/mobuild/vimconf/tmprc
+    #testing only [change path when ready]
+    cp vimconf/.vimrc vimconf/.vimrc_old
+    cat vimconf/vim_template vimconf/.vimrc > vimconf/tmprc
+    cp vimconf/tmprc vimconf/.vimrc
+    > ~/bin/mobuild/vimconf/tmprc
+fi
 
 #echo -e "$dflt Done!"
 #echo
