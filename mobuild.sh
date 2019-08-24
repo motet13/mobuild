@@ -99,17 +99,17 @@ done
 # Download Vundle.vim
 # Insert recommended Vundle settings in .vimrc
 # copy original .vimrc first
+vundle='git clone https://github.com/VundleVim/Vundle.vim.git ~/bin/mobuild/vimconf/bundle/Vundle.vim'
+echo -e "$grn [ Cloning ] $gry" $vundle
 
-git clone https://github.com/VundleVim/Vundle.vim.git ~/practice/bundle/Vundle.vim
+#testing only [change path when ready]
+cp vimconf/.vimrc vimconf/.vimrc_old
 
-#cp ~/.vimrc ~/.vimrc_old
+cat vimconf/vim_template vimconf/.vimrc > vimconf/tmprc
 
-#cat vimconf/vim_template ~/.vimrc > vimconf/tmprc
+cp vimconf/tmprc vimconf/.vimrc
 
-#cp vimconf/tmprc ~/.vimrc
-
-#> vimconf/tmprc
-
+> ~/bin/mobuild/vimconf/tmprc
 
 #echo -e "$dflt Done!"
 #echo
