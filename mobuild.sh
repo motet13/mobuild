@@ -100,7 +100,8 @@ done
 # Download Vundle.vim if not installed else exit
 # Insert recommended Vundle settings in .vimrc
 # copy original .vimrc first
-if [ -d "~/bin/mobuild/vimconf/bundle/Vundle.vim" ]; then
+
+if [ -e "~/bin/mobuild/vimconf/bundle/Vundle.vim" ]; then
     echo "Vundle.vim is already install."
 else
     vundle='git clone https://github.com/VundleVim/Vundle.vim.git ~/bin/mobuild/vimconf/bundle/Vundle.vim'
