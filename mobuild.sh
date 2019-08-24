@@ -101,11 +101,13 @@ done
 # Insert recommended Vundle settings in .vimrc
 # copy original .vimrc first
 
-if [ -e "~/bin/mobuild/vimconf/bundle/Vundle.vim" ]; then
-    echo "Vundle.vim is already install."
+isvundle=~/bin/mobuild/vimconf/bundle/Vundle.vim
+
+if [ -e $isvundle ]; then
+    echo "Vundle.vim is already installed."
 else
-    vundle='git clone https://github.com/VundleVim/Vundle.vim.git ~/bin/mobuild/vimconf/bundle/Vundle.vim'
-    echo -e "$grn [ Cloning ] $gry" $vundle
+    echo -en "$grn [ Cloning ] $gry"
+    git clone https://github.com/VundleVim/Vundle.vim.git ~/bin/mobuild/vimconf/bundle/Vundle.vim
 
     #testing only [change path when ready]
     cp vimconf/.vimrc vimconf/.vimrc_old
