@@ -96,6 +96,20 @@ for i in $(ls templates); do
 #    cp templates/$i ~/.vim/templates
 done
 
+# Download Vundle.vim
+# Insert recommended Vundle settings in .vimrc
+# copy original .vimrc first
+
+git clone https://github.com/VundleVim/Vundle.vim.git ~/practice/bundle/Vundle.vim
+
+#cp ~/.vimrc ~/.vimrc_old
+
+#cat vimconf/vim_template ~/.vimrc > vimconf/tmprc
+
+#cp vimconf/tmprc ~/.vimrc
+
+#> vimconf/tmprc
+
 
 #echo -e "$dflt Done!"
 #echo
