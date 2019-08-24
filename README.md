@@ -5,3 +5,7 @@
 # How does it work?
   
   The idea is to check if wanted packages are installed to my machine. If not, then install it. The program will output a result letting me know what is installed or what is not installed. The program also has the ability to configure my .vimrc file, this includes installing Vudle.vim - a vim plugin manger, configuring vundle.vim within .vimrc, and downloading my favorite vim colorshemes.  
+  
+## Screenshot
+
+![screentshot](images/screenshot_sample.png)
