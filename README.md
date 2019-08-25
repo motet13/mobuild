@@ -12,6 +12,12 @@
     - I'm using Ubuntu 18.04. 
     - apt or apt-get
     - dpkg
+    
+# Installation
+```
+cd to /path/you/want/mobuild/in/
+git clone https://github.com/motet13/mobuild.git
+```
 
 
 ## Screenshot
