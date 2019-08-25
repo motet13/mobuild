@@ -23,8 +23,8 @@ echo -e " not installed ==> $red-$dflt"
 echo -e "$gry ------------------- $dflt"
 echo
 
-echo -e " Package:Status" > result.log
-echo -e " -------:------" >> result.log
+echo -e " Package:Status" > logs/result.log
+echo -e " -------:------" >> logs/result.log
 echo
 
 # Check if listed package in mylist.txt is installed in the system
@@ -32,22 +32,22 @@ for i in $list; do
     dpkg -s $i &> /dev/null 
     
     if [ $? == 0 ]; then
-        echo -e " $i:[$grn + $dflt]" >> result.log 
+        echo -e " $i:[$grn + $dflt]" >>logs/result.log 
     else
-        echo -e " $i:[$red - $dflt]" >> result.log
+        echo -e " $i:[$red - $dflt]" >> logs/result.log
         echo -e " $i" >> missing.tmp # redirect not installed
     fi
 done
 
 # Output result on screen
-column -s: -t result.log
+column -s: -t logs/result.log
 echo
 echo
 
 # Output missing.log on screen if there is any
 if [ -s missing.tmp ]; then 
     echo -e "$gry Please install missing Package(s) $dflt"
-    cat missing.tmp | tee missing.log
+    cat missing.tmp | tee logs/missing.log
 fi
 
 # empty missing.log file
@@ -70,7 +70,7 @@ echo -e "If Vim is installed but not configured for using Vundle, fix it!"
 echo
 
 # make directories in .vim containing bundle, colors, templates
-myvim="$(cat result.log | grep vim | awk '{print $2}')"
+myvim="$(cat logs/result.log | grep vim | awk '{print $2}')"
 dir_list=(~/.vim/bundle ~/.vim/colors ~/.vim/templates)
 if [ $myvim == '+' ]; then
     for i in "${dir_list[@]}"; do
@@ -137,7 +137,7 @@ fi
 
 #echo -e "$dflt Done!"
 echo
-echo "Tip: Change .vim/ and .vimrc ownership from root to USER."
+echo "Tip: Change ~/.vim and ~/.vimrc ownership from root to USER."
 echo 'Run sudo chown -R $USER: ~/.vim ~/.vimrc'
 
 #cp -R vimconf/.vim ~/
