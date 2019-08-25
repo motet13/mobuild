@@ -18,6 +18,12 @@
 cd to /path/you/want/mobuild/in/
 git clone https://github.com/motet13/mobuild.git
 ```
+### After cloning
+  Now that mobuild has been cloned. Run mobuild.sh located in mobuild directory. Running mobuild.sh will let you know wether a package listed in mylist.txt is installed or not. You can edit mylist.txt to keep track with your packages.
+```
+./mobuild.sh
+```
+
 
 
 ## Screenshot
