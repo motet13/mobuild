@@ -1,11 +1,11 @@
-Package:Status
--------:------
-vim:[[32m + [39m]
-screenfetch:[[32m + [39m]
-gcc:[[32m + [39m]
-make:[[32m + [39m]
-automake:[[32m + [39m]
-autoconf:[[32m + [39m]
-git:[[32m + [39m]
-youtube-dl:[[32m + [39m]
-doo-doo:[[91m - [39m]
+ Package:Status
+ -------:------
+ vim:[[32m + [39m]
+ screenfetch:[[32m + [39m]
+ gcc:[[32m + [39m]
+ make:[[32m + [39m]
+ automake:[[32m + [39m]
+ autoconf:[[32m + [39m]
+ git:[[32m + [39m]
+ youtube-dl:[[32m + [39m]
+ doo-doo:[[91m - [39m]
