@@ -16,4 +16,4 @@
 
 ## Screenshot
 
-![screentshot](images/screenshot_sample.png)
+![screentshot](images/Screenshot%202019-08-25%20at%2010.49.20%20AM.png)
