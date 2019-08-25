@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 #if [ $UID != 0 ]; then
 #    echo "Please run as sudo!"
 #    echo "sudo $0"
