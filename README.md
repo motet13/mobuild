@@ -13,7 +13,7 @@
     - apt or apt-get
     - dpkg
     
-# Installation
+# Installing
 ```
 cd to /path/you/want/mobuild/in/
 git clone https://github.com/motet13/mobuild.git
