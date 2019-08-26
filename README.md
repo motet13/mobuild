@@ -9,9 +9,9 @@
 # Prerequisites
 
   * Linux OS
-    - I'm using Ubuntu 18.04. 
-    - apt or apt-get
-    - dpkg
+    * I'm using Ubuntu 18.04. 
+    * apt or apt-get
+    * dpkg
     
 # Installing
 ```
@@ -33,6 +33,11 @@ You can choose wether you want to install missing packages or not.
 
 ### Configuring Vim to use Vundle as plugin manager
 If you are like me who love Vim, you have got to want to keep your vim seetings ready in a fresh Linux install. I like to have something to reference to get things done quickly.
+
+#### You can also visit
+* [Vundle](http://github.com/VundleVim/Vundle.Vim) - the actual page for installing Vundle
+
+
 
 
 
