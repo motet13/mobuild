@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 #if [ $UID != 0 ]; then
 #    echo "Please run as sudo!"
 #    echo "sudo $0"
@@ -45,10 +45,31 @@ echo
 echo
 
 # Output missing.log on screen if there is any
+missing=$(cat missing.tmp)
 if [ -s missing.tmp ]; then 
     echo -e "$gry Please install missing Package(s) $dflt"
-    cat missing.tmp | tee logs/missing.log
+    echo $missing | tee logs/missing.log
 fi
+
+# Ask to install missing packages
+read -n1 -p "Would you like to install missing package(s) [Y/n]? " answer
+case $answer in
+    Y | y) echo
+        for i in $missing; do
+            echo -en "$grn [ installing ] $gry $i"
+            echo
+            apt install $i
+        done;;
+    N | n) echo
+        echo OK, goodbye
+        true > missing.tmp
+        exit;;
+    *)
+        echo
+        echo "Sorry, wrong selection"
+        true > missing.tmp
+        exit;;
+esac
 
 # empty missing.log file
 true > missing.tmp
