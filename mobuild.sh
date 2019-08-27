@@ -58,7 +58,7 @@ case $answer in
         for i in $missing; do
             echo -en "$grn [ installing ] $gry $i"
             echo
-            apt install $i
+#            apt install $i
         done;;
     N | n) echo
         echo OK, goodbye
@@ -149,12 +149,16 @@ if [ -e $isvundle ]; then
     else
         echo -en "$grn [ Cloning ] $gry"
         git clone https://github.com/VundleVim/Vundle.vim.git ~/bin/mobuild/vimconf/bundle/Vundle.vim
-
         vimconf
     fi
 else
     vimconf
 fi
+
+echo
+echo "If you want, copy vimconf/vimplugn.txt contents and paste it in ~/.vimrc
+after the line Plugin 'VundleVim/Vundle.vim'. Then open vim and run
+:PluginInstall."
 
 #echo -e "$dflt Done!"
 echo
