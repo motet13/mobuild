@@ -32,7 +32,7 @@ sudo ./mobuild.sh
 You can choose wether you want to install missing packages or not.
 
 ### Configuring Vim to use Vundle as plugin manager
-If you are like me who love Vim, you have got to want to keep your vim seetings ready in a fresh Linux install. I like to have something to reference to get things done quickly.
+If you are like me who love Vim, you have got to want to keep your vim settings ready in a fresh Linux install.
 
 #### You can also visit
 * [Vundle](http://github.com/VundleVim/Vundle.Vim) - the actual page for installing Vundle
