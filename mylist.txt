@@ -6,4 +6,5 @@ automake
 autoconf
 git
 youtube-dl
-doo-doo
+example-not-installed
+example-not-installed-2

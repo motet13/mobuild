@@ -5,7 +5,7 @@
 #    echo "sudo $0"
 #    exit 1
 #fi
-#
+
 # text output color
 grn="\e[32m"
 dflt="\e[39m"
@@ -17,10 +17,10 @@ gry="\e[90m"
 list=$(cat mylist.txt)
 
 echo
-echo -e "$gry ------------------- "
+echo -e " ------------------- "
 echo -e "$gry     installed ==> $grn+$gry"
 echo -e " not installed ==> $red-$dflt"
-echo -e "$gry ------------------- $dflt"
+echo -e " ------------------- $dflt"
 echo
 
 echo -e " Package:Status" > logs/result.log
@@ -28,6 +28,10 @@ echo -e " -------:------" >> logs/result.log
 echo
 
 # Check if listed package in mylist.txt is installed in the system
+missingtmp=$(mktemp missing.XXXXXX)
+
+exec 3>$missingtmp
+
 for i in $list; do
     dpkg -s $i &> /dev/null 
     
@@ -35,59 +39,53 @@ for i in $list; do
         echo -e " $i:[$grn + $dflt]" >>logs/result.log 
     else
         echo -e " $i:[$red - $dflt]" >> logs/result.log
-        echo -e " $i" >> missing.tmp # redirect not installed
+        echo -e " $i" >&3 # redirect not installed
     fi
 done
-
+exec 3>&-
 # Output result on screen
 column -s: -t logs/result.log
 echo
 echo
 
 # Output missing.log on screen if there is any
-missing=$(cat missing.tmp)
-if [ -s missing.tmp ]; then 
-    echo -e "$gry Please install missing Package(s) $dflt"
-    echo $missing | tee logs/missing.log
+missing=$(cat $missingtmp)
+if [ -s $missingtmp ]; then 
+    echo " Missing Package(s)"
+    echo " ------------------"
+    echo "$missing" | tee logs/missing.log
 fi
 
-# Ask to install missing packages
-read -n1 -p "Would you like to install missing package(s) [Y/n]? " answer
-case $answer in
-    Y | y) echo
-        for i in $missing; do
-            echo -en "$grn [ installing ] $gry $i"
-            echo
-#            apt install $i
-        done;;
-    N | n) echo
-        echo OK, goodbye
-        true > missing.tmp
-        exit;;
-    *)
-        echo
-        echo "Sorry, wrong selection"
-        true > missing.tmp
-        exit;;
-esac
-
-# empty missing.log file
-true > missing.tmp
 echo
-echo -en "$gry Starting to configure"
+# Ask to install missing packages
 
-# Just a little "..." wait animation
-for i in $(seq 1 3);do
-    dot= echo -en "."
-    echo -en $dot   
-    sleep 1
+while true
+do
+    read -p " Would you like to install missing package(s) [Y/n]? " answer
+    case $answer in
+        Y | y) echo
+            for i in $missing; do
+                echo -en "$grn [ installing ] $gry $i"
+                echo
+                apt install $i -y
+            done
+            break;;
+        N | n) echo
+            echo " OK, moving on without installing..."
+            rm -f $missingtmp 2> /dev/null
+            break;;
+        *)
+            echo
+            echo " Sorry, wrong selection";;
+    esac
 done
 
-echo
+rm -f $missingtmp 2> /dev/null
 
 echo
-echo -e "$gry -------------- Build my Vim --------------- "
-echo -e "If Vim is installed but not configured for using Vundle, fix it!"
+echo
+echo -e "$dflt ------------------------- Build my Vim -------------------------"
+echo -e " If Vim is installed but not configured for using Vundle, fix it!"
 echo
 
 # make directories in .vim containing bundle, colors, templates
@@ -119,10 +117,6 @@ for i in $(ls templates); do
 #    cp templates/$i ~/.vim/templates
 done
 
-### Problem to solve.
-### How do i know if vim is not configured to use Vundle!
-### think! think! think!
-
 # Download Vundle.vim if not installed else exit
 # Insert recommended Vundle settings in .vimrc
 # copy original .vimrc first
@@ -142,8 +136,8 @@ isvundle=~/bin/mobuild/vimconf/bundle/Vundle.vim
 isvundleconf=$(cat ~/.vimrc | grep -o 'VundleVim/Vundle.vim')
 
 if [ -e $isvundle ]; then
-    echo "Vundle.vim is already installed in $isvundle" 
-    echo -en "Checking if it's configured to use Vundle..."
+    echo " Vundle.vim is already installed in $isvundle" 
+    echo -en " Checking if it's configured to use Vundle..."
     if [ $isvundleconf == 'VundleVim/Vundle.vim' ]; then
         echo -e "$grn [ Okay ] $gry"
     else
@@ -155,18 +149,11 @@ else
     vimconf
 fi
 
+echo -e "$dflt Your original .vimrc was saved as .vimrc_old"
 echo
-echo "If you want, copy vimconf/vimplugn.txt contents and paste it in ~/.vimrc
-after the line Plugin 'VundleVim/Vundle.vim'. Then open vim and run
-:PluginInstall."
+echo " Recommend: Change ~/.vim and ~/.vimrc ownership from root to USER."
+echo ' Run sudo chown -R $USER: ~/.vim ~/.vimrc'
 
-#echo -e "$dflt Done!"
-echo
-echo "Tip: Change ~/.vim and ~/.vimrc ownership from root to USER."
-echo 'Run sudo chown -R $USER: ~/.vim ~/.vimrc'
-
-#cp -R vimconf/.vim ~/
-#cp -R vimconf/.vimrc ~/ 
 
 #if [ $? == 0 ]; then
 #    echo -e "$dflt Done!"
