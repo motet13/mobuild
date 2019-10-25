@@ -1,0 +1,15 @@
+{
+   "package": 
+   [
+     "vim",
+     "screenfetch",  
+     "gcc",          
+     "make",         
+     "automake",     
+     "autoconf",     
+     "git",          
+     "youtube-dl",
+     "not-installed",
+     "not-installed2"
+    ]  
+}

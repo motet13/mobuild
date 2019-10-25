@@ -1,0 +1,21 @@
+{
+    "vim": {
+        "mkdir": [
+            ".vim/bundle",
+            ".vim/colors",
+            ".vim/templates"
+        ],
+
+        "colorscheme": [
+            "https://raw.githubusercontent.com/tomasr/molokai/master/colors/molokai.vim",
+            "https://raw.githubusercontent.com/sjl/badwolf/master/colors/badwolf.vim"
+        ],
+
+        "skeleton": [
+            "skeleton.c",
+            "skeleton.sh"
+        ]
+    }
+}
+
+
