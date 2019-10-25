@@ -35,7 +35,7 @@ do
     dpkg -s $i &> /dev/null
 
     if [ $? == 0 ]; then
-        echo -e " $i:[$grn + $dflt]" >>logs/result.log
+        echo -e " $i:[$grn + $dflt]" >> logs/result.log
     else
         echo -e " $i:[$red - $dflt]" >> logs/result.log
         not_installed+=("$i")
@@ -65,7 +65,11 @@ do
             for i in ${not_installed[@]}; do
                 echo -en "$grn [ installing ] $gry $i"
                 echo
-                apt install $i -y
+                apt-get install $i -y >> logs/apt_install.log 2>&1
+
+                if [[ $? != 0 ]]; then
+                    echo " Error installing $i"
+                fi
             done
             break;;
         N | n) echo
