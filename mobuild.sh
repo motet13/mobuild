@@ -63,12 +63,14 @@ do
     case $answer in
         Y | y) echo
             for i in ${not_installed[@]}; do
-                echo -en "$grn [ installing ] $gry $i"
-                echo
+                echo -en "$grn [ installing ]$gry $i..."
                 apt-get install $i -y >> logs/apt_install.log 2>&1
 
                 if [[ $? != 0 ]]; then
-                    echo " Error installing $i"
+                    echo -en "$red [ Error ]$gry Please review apt_install.log"
+                    echo
+                else
+                    echo -e "okay"
                 fi
             done
             break;;
