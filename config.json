@@ -14,6 +14,13 @@
         "skeleton": [
             "skeleton.c",
             "skeleton.sh"
+        ],
+
+        "plugins": [
+            "vim-syntastic/syntastic",
+            "jiangmiao/auto-pairs",
+            "tpope/vim-surround",
+            "itchyny/lightline.vim"
         ]
     }
 }

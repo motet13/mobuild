@@ -14,12 +14,12 @@ red="\e[91m"
 gry="\e[90m"
 not_installed=()
 # list of wanted packages to be installed
-# may edit mylist.txt file to fit your needs
+# may edit package.json file to fit your needs
 #list=$(cat mylist.txt)
 
 echo
 echo -e " ------------------- "
-echo -e "$gry     installed ==> $grn+$gry"
+echo -e "     installed ==> $grn+$dflt"
 echo -e " not installed ==> $red-$dflt"
 echo -e " ------------------- $dflt"
 echo
@@ -48,7 +48,7 @@ echo
 echo
 
 # Output not installed packages on screen if there is any
-echo -e "$gry Please install missing Package(s) $dflt"
+echo -e " Please install missing Package(s)"
 
 for i in ${not_installed[@]}
 do
@@ -63,14 +63,14 @@ do
     case $answer in
         Y | y) echo
             for i in ${not_installed[@]}; do
-                echo -en "$grn [ installing ]$gry $i..."
+                echo -en "$grn [ installing ]$dflt $i..."
                 apt-get install $i -y >> logs/apt_install.log 2>&1
 
                 if [[ $? != 0 ]]; then
-                    echo -en "$red [ Error ]$gry Please review apt_install.log"
+                    echo -en "$red[ Error ]$dflt Please review apt_install.log"
                     echo
                 else
-                    echo -e "okay"
+                    echo -e "Okay"
                 fi
             done
             break;;
@@ -82,3 +82,7 @@ do
             echo " Sorry, wrong selection";;
     esac
 done
+
+echo "Run vim_setup.sh then run xplugn.sh"
+
+# Updated 11/30/19

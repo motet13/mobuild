@@ -1,4 +1,4 @@
-#!/bin/bash 
+#!/bin/bash
 
 IFS_OLD=$IFS
 IFS=$'\n'
@@ -11,13 +11,16 @@ cp tmprc .vimrc
 
 true > tmprc
 
-vimplugn=$(cat vimplugn.list)
-count=12
-for i in $vimplugn; do
-    sed "$count i $i" .vimrc > .vimrc
-    count=`expr $count + 1`
-done
+# vimplugn=$(cat vimplugn.list)
+# count=12
+# for i in $vimplugn; do
+#     sed "$count i $i" .vimrc > .vimrc
+#     count=`expr $count + 1`
+# done
 
 #sed "12 i $vimplugn" .vimrc
 #echo $vimplugn
 IFS=$IFS_OLD
+
+
+# Updated 11/30/19
