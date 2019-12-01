@@ -5,6 +5,9 @@ echo -e "$dflt ------------------------- Build my Vim -------------------------"
 echo -e " If Vim is installed but not configured for using Vundle, fix it!"
 echo
 
+date=$(date +%y/%m/%d)
+time=$(date +%H:%M:%S)
+
 # Change this value to ~/.vim
 test_vim_dir=$HOME/gitz/mobuild/vimconf
 
@@ -62,22 +65,22 @@ done
 # copy original .vimrc first
 
 # [testing] don't forget to change isvundle value to ~/.vim/bundle/Vundle.vim
-isvundle=~/bin/mobuild/vimconf/bundle/Vundle.vim
-isvundleconf=$(cat ~/.vimrc | grep -o 'VundleVim/Vundle.vim')
+# isvundle=~/bin/mobuild/vimconf/bundle/Vundle.vim
+# isvundleconf=$(cat ~/.vimrc | grep -o 'VundleVim/Vundle.vim')
 
-if [ -e $isvundle ]; then
-    echo " Vundle.vim is already installed in $isvundle"
-    echo -en " Checking if it's configured to use Vundle..."
-    if [ $isvundleconf == 'VundleVim/Vundle.vim' ]; then
-        echo -e "$grn [ Okay ] $gry"
-    else
-        echo -en "$grn [ Cloning ] $gry"
-        git clone https://github.com/VundleVim/Vundle.vim.git ~/bin/mobuild/vimconf/bundle/Vundle.vim
-        vimconf
-    fi
-else
-    vimconf
-fi
+# if [ -e $isvundle ]; then
+#     echo " Vundle.vim is already installed in $isvundle"
+#     echo -en " Checking if it's configured to use Vundle..."
+#     if [ $isvundleconf == 'VundleVim/Vundle.vim' ]; then
+#         echo -e "$grn [ Okay ] $gry"
+#     else
+#         echo -en "$grn [ Cloning ] $gry"
+#         git clone https://github.com/VundleVim/Vundle.vim.git ~/bin/mobuild/vimconf/bundle/Vundle.vim
+#         vimconf
+#     fi
+# else
+#     vimconf
+# fi
 
 echo -e "$dflt Your original .vimrc was saved as .vimrc_old"
 echo
@@ -91,3 +94,6 @@ echo ' Run sudo chown -R $USER: ~/.vim ~/.vimrc'
 #    echo -e "$red Error!"
 #fi
 #echo
+echo
+echo " Updated: $date at $time"
+

@@ -13,6 +13,10 @@ dflt="\e[39m"
 red="\e[91m"
 gry="\e[90m"
 not_installed=()
+
+date=$(date +%y/%m/%d)
+time=$(date +%H:%M:%S)
+
 # list of wanted packages to be installed
 # may edit package.json file to fit your needs
 #list=$(cat mylist.txt)
@@ -83,6 +87,7 @@ do
     esac
 done
 
-echo "Run vim_setup.sh then run xplugn.sh"
+echo " Run vim_setup.sh then run xplugn.sh"
 
-# Updated 11/30/19
+echo
+echo " Updated: $date at $time"
