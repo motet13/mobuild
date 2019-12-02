@@ -16,6 +16,10 @@
             "skeleton.sh"
         ],
 
+        "vundle": [
+            "https://github.com/VundleVim/Vundle.vim.git"
+        ],
+
         "plugins": [
             "vim-syntastic/syntastic",
             "jiangmiao/auto-pairs",
