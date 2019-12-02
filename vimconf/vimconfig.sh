@@ -11,8 +11,8 @@ date=$(date +%y/%m/%d)
 time=$(date +%H:%M:%S)
 
 # Change this value to ~/.vim
-#test_vim_dir=$HOME/gitz/mobuild/vimconf
-test_vim_dir=$HOME/repo/mobuild/vimconf
+test_vim_dir=$HOME/gitz/mobuild/vimconf
+# test_vim_dir=$HOME/repo/mobuild/vimconf
 
 grn="\e[32m"
 dflt="\e[39m"
@@ -37,12 +37,16 @@ fi
 # download colorschemes
 for i in $(jq -r '.vim.colorscheme[]' ../config.json); do
     file=$(echo $i | sed 's/\// /g' | awk '{print $NF}')
-    echo -en "$grn [ Downloading ] $dflt $file..."
-    curl -o $test_vim_dir/.vim/colors/$file $i >> error.log 2>&1
-    if [[ $? == 0 ]]; then
-        echo -e "$grn Okay $dflt"
+    if [ ! -e $test_vim_dir/.vim/colors/$file ]; then
+        echo -en "$grn [ Downloading ] $dflt $file..."
+        curl -o $test_vim_dir/.vim/colors/$file $i >> error.log 2>&1
+        if [[ $? == 0 ]]; then
+            echo -e "$grn Okay $dflt"
+        else
+            echo -e "$red Error $dflt:Please see error.log!"
+        fi
     else
-        echo -e "$red Error $dflt:Please see error.log!"
+        echo -e " $file already exists...$grn Done $dflt"
     fi
 done
 
@@ -62,8 +66,10 @@ done
 # copy original .vimrc first
 
 # [testing] don't forget to change isvundle value to ~/.vim/bundle/Vundle.vim
-isvundle=$HOME/repo/mobuild/vimconf/.vim/bundle/Vundle.vim
-isvundleconf=$(cat $HOME/repo/mobuild/vimconf/.vimrc | grep -o 'VundleVim/Vundle.vim')
+# isvundle=$HOME/repo/mobuild/vimconf/.vim/bundle/Vundle.vim
+isvundle=$HOME/gitz/mobuild/vimconf/.vim/bundle/Vundle.vim
+isvundleconf=$(cat $HOME/gitz/mobuild/vimconf/.vimrc | grep -o 'VundleVim/Vundle.vim')
+# isvundleconf=$(cat $HOME/repo/mobuild/vimconf/.vimrc | grep -o 'VundleVim/Vundle.vim')
 
 function setup_vundle {
     echo -en "$grn [ Configuring Vundle ]$dflt"
@@ -82,10 +88,15 @@ function setup_vundle {
 if [ ! -e $isvundle ]; then
     echo -en "$grn [ Cloning ] $dflt"
     myvundle=$(jq -r '.vim.vundle[]' ../config.json)
-    git clone $myvundle $HOME/repo/mobuild/vimconf/.vim/bundle/Vundle.vim
+    echo -en "$myvundle..."
+    # git clone $myvundle $HOME/repo/mobuild/vimconf/.vim/bundle/Vundle.vim >> error.log 2>&1
+    git clone $myvundle $HOME/gitz/mobuild/vimconf/.vim/bundle/Vundle.vim >> error.log 2>&1
+    if [[ $? == 0 ]]; then
+        echo -e "$grn Okay $dflt"
+    fi
     setup_vundle
 else
-    echo " Vundle.vim is already installed in $isvundle"
+    echo -e " Vundle.vim is already installed in $isvundle...$grn Done $dflt"
     echo -en " Checking if it's configured to use Vundle..."
     if [[ $isvundleconf != 'VundleVim/Vundle.vim' ]]; then
         echo
@@ -102,5 +113,5 @@ echo " Recommend: Change ~/.vim and ~/.vimrc ownership from root to USER."
 echo ' Run sudo chown -R $USER: ~/.vim ~/.vimrc'
 
 echo
-echo " Updated: $date at $time"
+echo " Last Run: $date at $time"
 
