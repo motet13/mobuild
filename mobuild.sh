@@ -67,14 +67,22 @@ do
     case $answer in
         Y | y) echo
             for i in ${not_installed[@]}; do
-                echo -en "$grn [ installing ]$dflt $i..."
-                apt-get install $i -y >> logs/apt_install.log 2>&1
+                if [[ $i != 'sublime-text' ]]; then
+                    echo -en "$grn [ installing ]$dflt $i..."
+                    apt-get install $i -y >> logs/apt_install.log 2>&1
 
-                if [[ $? != 0 ]]; then
-                    echo -en "$red[ Error ]$dflt Please review apt_install.log"
-                    echo
+                    if [[ $? != 0 ]]; then
+                        echo -en "$red[ Error ]$dflt Please review apt_install.log"
+                        echo
+                    else
+                        echo -e "Okay"
+                    fi
                 else
-                    echo -e "Okay"
+                    # [ TESTING ]
+                    echo -en "$grn [ installing ]$dflt sublime-text..."
+                    # wget -qO - $(jq -r '.sublime[0]' package.json) | sudo apt-key add -
+                    # sudo apt-get install $(jq -r '.sublime[1]' package.json) >> logs/apt_install.log 2>&1
+                    # echo $(jq -r '.sublime[2]' package.json) | sudo tee /etc/apt/sources.list.d/sublime-text.list
                 fi
             done
             break;;
@@ -90,4 +98,4 @@ done
 echo " Run vim_setup.sh then run xplugn.sh"
 
 echo
-echo " Updated: $date at $time"
+echo " Last ran: $date at $time"

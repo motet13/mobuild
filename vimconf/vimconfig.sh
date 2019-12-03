@@ -11,8 +11,8 @@ date=$(date +%y/%m/%d)
 time=$(date +%H:%M:%S)
 
 # Change this value to ~/.vim
-test_vim_dir=$HOME/gitz/mobuild/vimconf
-# test_vim_dir=$HOME/repo/mobuild/vimconf
+#test_vim_dir=$HOME/gitz/mobuild/vimconf
+test_vim_dir=$HOME/repo/mobuild/vimconf
 
 grn="\e[32m"
 dflt="\e[39m"
@@ -66,10 +66,10 @@ done
 # copy original .vimrc first
 
 # [testing] don't forget to change isvundle value to ~/.vim/bundle/Vundle.vim
-# isvundle=$HOME/repo/mobuild/vimconf/.vim/bundle/Vundle.vim
-isvundle=$HOME/gitz/mobuild/vimconf/.vim/bundle/Vundle.vim
-isvundleconf=$(cat $HOME/gitz/mobuild/vimconf/.vimrc | grep -o 'VundleVim/Vundle.vim')
-# isvundleconf=$(cat $HOME/repo/mobuild/vimconf/.vimrc | grep -o 'VundleVim/Vundle.vim')
+isvundle=$HOME/repo/mobuild/vimconf/.vim/bundle/Vundle.vim
+# isvundle=$HOME/gitz/mobuild/vimconf/.vim/bundle/Vundle.vim
+# isvundleconf=$(cat $HOME/gitz/mobuild/vimconf/.vimrc | grep -o 'VundleVim/Vundle.vim')
+isvundleconf=$(cat $HOME/repo/mobuild/vimconf/.vimrc | grep -o 'VundleVim/Vundle.vim')
 
 function setup_vundle {
     echo -en "$grn [ Configuring Vundle ]$dflt"
@@ -89,8 +89,8 @@ if [ ! -e $isvundle ]; then
     echo -en "$grn [ Cloning ] $dflt"
     myvundle=$(jq -r '.vim.vundle[]' ../config.json)
     echo -en "$myvundle..."
-    # git clone $myvundle $HOME/repo/mobuild/vimconf/.vim/bundle/Vundle.vim >> error.log 2>&1
-    git clone $myvundle $HOME/gitz/mobuild/vimconf/.vim/bundle/Vundle.vim >> error.log 2>&1
+    git clone $myvundle $HOME/repo/mobuild/vimconf/.vim/bundle/Vundle.vim >> error.log 2>&1
+    # git clone $myvundle $HOME/gitz/mobuild/vimconf/.vim/bundle/Vundle.vim >> error.log 2>&1
     if [[ $? == 0 ]]; then
         echo -e "$grn Okay $dflt"
     fi
@@ -113,5 +113,5 @@ echo " Recommend: Change ~/.vim and ~/.vimrc ownership from root to USER."
 echo ' Run sudo chown -R $USER: ~/.vim ~/.vimrc'
 
 echo
-echo " Last Run: $date at $time"
+echo " Last ran: $date at $time"
 
