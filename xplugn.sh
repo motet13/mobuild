@@ -1,5 +1,6 @@
 #!/bin/bash
 
+# Add Extra plugins after configuring Vundle for vim
 echo "Adding extra plugins"
 IFS_OLD=$IFS
 IFS=$'\n'
@@ -10,7 +11,7 @@ count=11
 #     sed -i "$count a $i" vimconf/.vimrc
 # done
 
-# echo "Open vim and run :PluginInstall to properly install added Plugins."
+echo "Open vim and run :PluginInstall to properly install added Plugins."
 for i in $(jq -r '.vim.plugins[]' config.json)
 do
     sed -i "$count a Plugin '$i'" vimconf/.vimrc
