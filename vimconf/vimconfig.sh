@@ -14,8 +14,9 @@ time=$(date +%H:%M:%S)
 vim_json=../config.json
 
 # Change this value to ~/.vim
-#test_vim_dir=$HOME/gitz/mobuild/vimconf
-test_vim_dir=$HOME/repo/mobuild/vimconf
+#real_vim_dir=$HOME/gitz/mobuild/vimconf
+real_vim_dir=$HOME/repo/mobuild/vimconf
+real_vim_dir=$HOME/
 
 grn="\e[32m"
 dflt="\e[39m"
@@ -29,20 +30,30 @@ myvim="$(cat ../logs/result.log | grep vim | awk '{print $2}')"
 # make directories in ~/.vim
 if [ $myvim == '+' ]; then
     for i in $(jq -r '.vim.mkdir[]' $vim_json); do
-        echo -en "$grn [ mkdir ]$dflt $test_vim_dir/$i..."
-        mkdir -p $test_vim_dir/$i 2> error.log
+        echo -en "$grn [ mkdir ]$dflt $real_vim_dir/$i..."
+        mkdir -p $real_vim_dir/$i 2> error.log
         if [[ $? == 0 ]]; then
             echo -e "$grn Okay $dflt"
         fi
     done
 fi
 
+# Check if .vimrc file exist
+echo -en "$grn [ Vimrc File ] $dflt"
+if [ -e $vimrc ]
+then
+    echo -e "$grn... Okay $dflt"
+else
+    echo -e " making .vimrc file..."
+    touch $HOME/.vimrc
+fi
+
 # download colorschemes
 for i in $(jq -r '.vim.colorscheme[]' $vim_json); do
     file=$(echo $i | sed 's/\// /g' | awk '{print $NF}')
-    if [ ! -e $test_vim_dir/.vim/colors/$file ]; then
+    if [ ! -e $real_vim_dir/.vim/colors/$file ]; then
         echo -en "$grn [ Downloading ] $dflt $file..."
-        curl -o $test_vim_dir/.vim/colors/$file $i >> error.log 2>&1
+        curl -o $real_vim_dir/.vim/colors/$file $i >> error.log 2>&1
         if [[ $? == 0 ]]; then
             echo -e "$grn Okay $dflt"
         else
@@ -69,32 +80,33 @@ done
 # copy original .vimrc first
 
 # [testing] don't forget to change isvundle value to ~/.vim/bundle/Vundle.vim
-isvundle=$HOME/repo/mobuild/vimconf/.vim/bundle/Vundle.vim
+vimrc=$HOME/.vimrc
+isvundle=$HOME/.vim/bundle/Vundle.vim
 # isvundle=$HOME/gitz/mobuild/vimconf/.vim/bundle/Vundle.vim
 # isvundleconf=$(cat $HOME/gitz/mobuild/vimconf/.vimrc | grep -o 'VundleVim/Vundle.vim')
-isvundleconf=$(cat $HOME/repo/mobuild/vimconf/.vimrc | grep -o 'VundleVim/Vundle.vim')
+isvundleconf=$(cat $vimrc | grep -o 'VundleVim/Vundle.vim')
 
 function setup_vundle {
     echo -en "$grn [ Vundle ]$dflt Configuring..."
     FS_OLD=$IFS
     IFS=$'\n'
 
-    cp .vimrc .vimrc_old
+    cp $vimrc $HOME/.vimrc_old
 
-    cat vim_template .vimrc > tmprc
-    cp tmprc .vimrc
+    cat vim_template $vimrc > tmprc
+    cp tmprc $vimrc
     true > tmprc
     IFS=$IFS_OLD
-    echo -e "...$grn Done $dflt"
+    echo -e "$grn Done $dflt"
 }
 
 echo -en "$grn [ Vundle ]$dflt Cheking if vundle is installed..."
 if [ ! -e $isvundle ]; then
     echo -e " Installing Vundle"
-    echo -e "$grn [ Cloning ] $dflt"
+    echo -en "$grn [ Cloning ] $dflt"
     myvundle=$(jq -r '.vim.vundle[]' $vim_json)
     echo -en "$myvundle..."
-    git clone $myvundle $HOME/repo/mobuild/vimconf/.vim/bundle/Vundle.vim >> error.log 2>&1
+    git clone $myvundle $HOME/.vim/bundle/Vundle.vim >> error.log 2>&1
     # git clone $myvundle $HOME/gitz/mobuild/vimconf/.vim/bundle/Vundle.vim >> error.log 2>&1
     if [[ $? == 0 ]]; then
         echo -e "$grn Okay $dflt"
@@ -119,12 +131,12 @@ count=11
 for i in $(jq -r '.vim.plugins[]' $vim_json)
 do
     echo -en "$grn [ Plugins ]$dflt"
-    if grep -q $i .vimrc
+    if grep -q $i $vimrc
     then
         echo -e " $i...$grn Okay $dflt"
     else
         echo -e " Inserting $i..."
-        sed -i "$count a Plugin '$i'" .vimrc
+        sed -i "$count a Plugin '$i'" $vimrc
     fi
 done
 
