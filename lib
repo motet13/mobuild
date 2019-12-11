@@ -1,9 +1,0 @@
-# function to configure vim if it's not configured to use Vundle.
-vimconf() {
-    # [testing]
-    # real path to .vimrc is ~/.vimrc
-    cp vimconf/.vimrc vimconf/.vimrc_old
-    cat vimconf/vim_template vimconf/.vimrc > vimconf/tmprc
-    cp vimconf/tmprc vimconf/.vimrc
-    true > vimconf/tmprc
-}

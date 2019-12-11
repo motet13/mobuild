@@ -1,5 +1,5 @@
 #!/bin/bash
-. lib
+
 #
 #if [ $UID != 0 ]; then
 #    echo "Please run as sudo!"
@@ -17,8 +17,10 @@ not_installed=()
 date=$(date +%y/%m/%d)
 time=$(date +%H:%M:%S)
 
+package=conf/package.json
+
 # list of wanted packages to be installed
-# may edit package.json file to fit your needs
+# may edit $package file to fit your needs
 #list=$(cat mylist.txt)
 
 echo
@@ -32,9 +34,9 @@ echo -e " Package:Status" > logs/result.log
 echo -e " -------:------" >> logs/result.log
 echo
 
-# Check if listed package in package.json is installed in the system
+# Check if listed package in $package is installed in the system
 
-for i in $(jq -r '.package[]' package.json)
+for i in $(jq -r '.package[]' $package)
 do
     dpkg -s $i &> /dev/null
 
@@ -80,9 +82,9 @@ do
                 else
                     # [ TESTING ]
                     echo -en "$grn [ installing ]$dflt sublime-text..."
-                    # wget -qO - $(jq -r '.sublime[0]' package.json) | sudo apt-key add -
-                    # sudo apt-get install $(jq -r '.sublime[1]' package.json) >> logs/apt_install.log 2>&1
-                    # echo $(jq -r '.sublime[2]' package.json) | sudo tee /etc/apt/sources.list.d/sublime-text.list
+                    # wget -qO - $(jq -r '.sublime[0]' $package) | sudo apt-key add -
+                    # sudo apt-get install $(jq -r '.sublime[1]' $package) >> logs/apt_install.log 2>&1
+                    # echo $(jq -r '.sublime[2]' $package) | sudo tee /etc/apt/sources.list.d/sublime-text.list
                 fi
             done
             break;;

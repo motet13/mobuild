@@ -10,13 +10,15 @@ echo
 date=$(date +%y/%m/%d)
 time=$(date +%H:%M:%S)
 
+error=logs/error.log
+
 # Configuration file for vim
-vim_json=../config.json
+vim_json=conf/vimconfig.json
 
 # Change this value to ~/.vim
 #real_vim_dir=$HOME/gitz/mobuild/vimconf
-real_vim_dir=$HOME/repo/mobuild/vimconf
-real_vim_dir=$HOME/
+#real_vim_dir=$HOME/repo/mobuild/vimconf
+real_vim_dir=$HOME
 
 grn="\e[32m"
 dflt="\e[39m"
@@ -25,13 +27,13 @@ gry="\e[90m"
 
 # make directories in .vim containing bundle, colors, templates
 # check if vim is installed
-myvim="$(cat ../logs/result.log | grep vim | awk '{print $2}')"
+myvim="$(cat logs/result.log | grep vim | awk '{print $2}')"
 
 # make directories in ~/.vim
 if [ $myvim == '+' ]; then
     for i in $(jq -r '.vim.mkdir[]' $vim_json); do
         echo -en "$grn [ mkdir ]$dflt $real_vim_dir/$i..."
-        mkdir -p $real_vim_dir/$i 2> error.log
+        mkdir -p $real_vim_dir/$i 2> $error
         if [[ $? == 0 ]]; then
             echo -e "$grn Okay $dflt"
         fi
@@ -39,10 +41,10 @@ if [ $myvim == '+' ]; then
 fi
 
 # Check if .vimrc file exist
-echo -en "$grn [ Vimrc File ] $dflt"
+echo -en "$grn [ Vimrc File ]$dflt Checking for .vimrc file"
 if [ -e $vimrc ]
 then
-    echo -e "$grn... Okay $dflt"
+    echo -e "...$grn Exists $dflt"
 else
     echo -e " making .vimrc file..."
     touch $HOME/.vimrc
@@ -53,14 +55,15 @@ for i in $(jq -r '.vim.colorscheme[]' $vim_json); do
     file=$(echo $i | sed 's/\// /g' | awk '{print $NF}')
     if [ ! -e $real_vim_dir/.vim/colors/$file ]; then
         echo -en "$grn [ Downloading ] $dflt $file..."
-        curl -o $real_vim_dir/.vim/colors/$file $i >> error.log 2>&1
+        curl -o $real_vim_dir/.vim/colors/$file $i >> $error 2>&1
         if [[ $? == 0 ]]; then
             echo -e "$grn Okay $dflt"
         else
-            echo -e "$red Error $dflt:Please see error.log!"
+            echo -e "$red Error $dflt:Please see $error
+   !"
         fi
     else
-        echo -e "$grn [ Colorscheme ]$dflt $file...$grn Already Exists $dflt"
+        echo -e "$grn [ Colorscheme ]$dflt $file...$grn Exists $dflt"
     fi
 done
 
@@ -106,8 +109,8 @@ if [ ! -e $isvundle ]; then
     echo -en "$grn [ Cloning ] $dflt"
     myvundle=$(jq -r '.vim.vundle[]' $vim_json)
     echo -en "$myvundle..."
-    git clone $myvundle $HOME/.vim/bundle/Vundle.vim >> error.log 2>&1
-    # git clone $myvundle $HOME/gitz/mobuild/vimconf/.vim/bundle/Vundle.vim >> error.log 2>&1
+    git clone $myvundle $HOME/.vim/bundle/Vundle.vim >> $erro 2>&1
+    # git clone $myvundle $HOME/gitz/mobuild/vimconf/.vim/bundle/Vundle.vim >> $erro 2>&1
     if [[ $? == 0 ]]; then
         echo -e "$grn Okay $dflt"
     fi
