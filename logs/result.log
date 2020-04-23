@@ -11,3 +11,5 @@
  sublime-text:[[32m + [39m]
  not-installed:[[91m - [39m]
  not-installed2:[[91m - [39m]
+ gawk:[[32m + [39m]
+ net-tools:[[32m + [39m]

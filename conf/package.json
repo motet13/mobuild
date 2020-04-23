@@ -11,7 +11,9 @@
      "youtube-dl",
      "sublime-text",
      "not-installed",
-     "not-installed2"
+     "not-installed2",
+     "gawk",
+     "net-tools"
     ],
    "sublime":
    [
