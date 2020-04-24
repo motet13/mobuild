@@ -8,12 +8,8 @@
  autoconf:[[32m + [39m]
  git:[[32m + [39m]
  youtube-dl:[[32m + [39m]
-<<<<<<< HEAD
  sublime-text:[[32m + [39m]
  not-installed:[[91m - [39m]
  not-installed2:[[91m - [39m]
  gawk:[[32m + [39m]
  net-tools:[[32m + [39m]
-=======
- doo-doo:[[91m - [39m]
->>>>>>> bcb6c54ce61975436b89ccdcd6e3c8fdde134c5d
