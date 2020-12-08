@@ -1,9 +1,0 @@
-vim
-screenfetch
-gcc
-make
-automake
-autoconf
-git
-youtube-dl
-doo-doo
