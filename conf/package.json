@@ -2,16 +2,13 @@
    "package":
    [
      "vim",
-     "screenfetch",
+     "neofetch",
+     "python3",
      "gcc",
      "make",
      "automake",
      "autoconf",
      "git",
-     "youtube-dl",
-     "sublime-text",
-     "not-installed",
-     "not-installed2",
      "gawk",
      "net-tools"
     ],

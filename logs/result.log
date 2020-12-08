@@ -1,15 +1,12 @@
  Package:Status
  -------:------
  vim:[[32m + [39m]
- screenfetch:[[32m + [39m]
+ neofetch:[[32m + [39m]
+ python3:[[32m + [39m]
  gcc:[[32m + [39m]
  make:[[32m + [39m]
  automake:[[32m + [39m]
  autoconf:[[32m + [39m]
  git:[[32m + [39m]
- youtube-dl:[[32m + [39m]
- sublime-text:[[32m + [39m]
- not-installed:[[91m - [39m]
- not-installed2:[[91m - [39m]
  gawk:[[32m + [39m]
  net-tools:[[32m + [39m]
