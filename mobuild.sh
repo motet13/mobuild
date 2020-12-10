@@ -1,11 +1,10 @@
 #!/bin/bash
 
-#
-#if [ $UID != 0 ]; then
+# if [ $UID != 0 ]; then
 #    echo "Please run as sudo!"
 #    echo "sudo $0"
 #    exit 1
-#fi
+# fi
 
 # text output color
 grn="\e[32m"
@@ -30,8 +29,8 @@ echo -e " not installed ==> $red-$dflt"
 echo -e " ------------------- $dflt"
 echo
 
-echo -e " Package:Status" > logs/result.log
-echo -e " -------:------" >> logs/result.log
+echo -e " Package:Status:Install" > logs/result.log
+echo -e " -------:------:-------" >> logs/result.log
 echo
 
 # Check if listed package in $package is installed in the system
@@ -41,9 +40,22 @@ do
     dpkg -s $i &> /dev/null
 
     if [ $? == 0 ]; then
-        echo -e " $i:[$grn + $dflt]" >> logs/result.log
+        echo -e " $i:[$grn + $dflt]:apt" >> logs/result.log
     else
-        echo -e " $i:[$red - $dflt]" >> logs/result.log
+        echo -e " $i:[$red - $dflt]:apt" >> logs/result.log
+        not_installed+=("$i")
+    fi
+done
+
+# Snaps
+for i in $(jq -r '.snap_packages[]' $package)
+do
+    snap list $i &> /dev/null
+
+    if [ $? == 0 ]; then
+        echo -e " $i:[$grn + $dflt]:snap" >> logs/result.log
+    else
+        echo -e " $i:[$red - $dflt]:snap" >> logs/result.log
         not_installed+=("$i")
     fi
 done
@@ -54,6 +66,12 @@ echo
 echo
 
 # Output not installed packages on screen if there is any
+
+if [ $(echo $not_installed | wc -w) == 0 ]; then
+    echo " All packages listed in $package have already been installed into your system."
+    exit
+fi
+
 echo -e " Please install missing Package(s)"
 
 for i in ${not_installed[@]}
@@ -62,6 +80,7 @@ do
 done
 echo
 echo
+
 # Ask to install missing packages
 while true
 do
@@ -80,11 +99,12 @@ do
                         echo -e "Okay"
                     fi
                 else
-                    # [ TESTING ]
                     echo -en "$grn [ installing ]$dflt sublime-text..."
-                    # wget -qO - $(jq -r '.sublime[0]' $package) | sudo apt-key add -
-                    # sudo apt-get install $(jq -r '.sublime[1]' $package) >> logs/apt_install.log 2>&1
-                    # echo $(jq -r '.sublime[2]' $package) | sudo tee /etc/apt/sources.list.d/sublime-text.list
+                    wget -qO - $(jq -r '.sublime[0]' $package) | sudo apt-key add -
+                    apt-get install $(jq -r '.sublime[1]' $package) >> logs/apt_install.log 2>&1
+                    echo $(jq -r '.sublime[2]' $package) | sudo tee /etc/apt/sources.list.d/sublime-text.list
+                    apt-get update >> logs/apt_install.log 2>&1
+                    apt-get install sublime-text >> logs/apt_install.log 2>&1
                 fi
             done
             break;;

@@ -1,12 +1,15 @@
- Package:Status
- -------:------
- vim:[[32m + [39m]
- neofetch:[[32m + [39m]
- python3:[[32m + [39m]
- gcc:[[32m + [39m]
- make:[[32m + [39m]
- automake:[[32m + [39m]
- autoconf:[[32m + [39m]
- git:[[32m + [39m]
- gawk:[[32m + [39m]
- net-tools:[[32m + [39m]
+ Package:Status:Install
+ -------:------:-------
+ vim:[[32m + [39m]:apt
+ neofetch:[[32m + [39m]:apt
+ python3:[[32m + [39m]:apt
+ gcc:[[32m + [39m]:apt
+ make:[[32m + [39m]:apt
+ automake:[[32m + [39m]:apt
+ autoconf:[[32m + [39m]:apt
+ git:[[32m + [39m]:apt
+ gawk:[[32m + [39m]:apt
+ net-tools:[[32m + [39m]:apt
+ sublime-text:[[32m + [39m]:apt
+ code:[[32m + [39m]:snap
+ gimp:[[32m + [39m]:snap
