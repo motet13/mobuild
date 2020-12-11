@@ -11,12 +11,19 @@
      "git",
      "gawk",
      "net-tools",
-     "sublime-text"
+     "inkscape",
+     "htop"
     ],
     "snap_packages":
     [
       "code",
-      "gimp"
+      "kcalc",
+      "keepassxc"
+    ],
+    "apt_add_repos":
+    [
+      "sublime-text",
+      "doo-doo"
     ],
    "sublime":
    [

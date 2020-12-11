@@ -60,6 +60,25 @@ do
     fi
 done
 
+# apt-add-repos
+for i in $(jq -r '.apt_add_repos[]' $package)
+do
+    dpkg -s $i &> /dev/null
+
+    if [ $? == 0 ]; then
+        echo -e " $i:[$grn + $dflt]:apt" >> logs/result.log
+    else
+        echo -e " $i:[$red - $dflt]:apt" >> logs/result.log
+        not_installed+=("$i")
+    fi
+done
+
+# for i in ${not_installed[@]}; do
+#     if [ $(jq -r '.snap_packages[]' $package | grep $i | echo $?) == 0 ]; then
+#         echo "SNAP"
+#     fi
+# done
+
 # Output result on screen
 column -s: -t logs/result.log
 echo
@@ -82,30 +101,65 @@ echo
 echo
 
 # Ask to install missing packages
+
+show_status() {
+    if [[ $? != 0 ]]; then
+        echo -en "$red [ Error ]$dflt Please review apt_install.log"
+        echo
+    else
+        echo -e "$grn Okay$dflt"
+    fi    
+}
+
 while true
 do
     read -p " Would you like to install missing package(s) [Y/n]? " answer
     case $answer in
         Y | y) echo
             for i in ${not_installed[@]}; do
-                if [[ $i != 'sublime-text' ]]; then
+                if [[ $(jq -r '.snap_packages[]' $package | grep $i) == $i ]]; then
+                    echo -en "$grn [ installing ]$dflt $i..."
+                    snap install $i >> logs/apt_install.log 2>&1
+                    # echo " Installing $i from snap"
+
+                    show_status
+
+                elif [[ $(jq -r '.package[]' $package | grep $i) == $i ]]; then
                     echo -en "$grn [ installing ]$dflt $i..."
                     apt-get install $i -y >> logs/apt_install.log 2>&1
+                    # echo "Installing $i from apt"
 
-                    if [[ $? != 0 ]]; then
-                        echo -en "$red[ Error ]$dflt Please review apt_install.log"
-                        echo
-                    else
-                        echo -e "Okay"
-                    fi
-                else
-                    echo -en "$grn [ installing ]$dflt sublime-text..."
+                    show_status
+
+                elif [[ $(jq -r '.apt_add_repos[]' $package | grep 'sublime-text') == 'sublime-text' ]]; then
+                    echo -en "$grn [ installing ]$dflt $i..."
                     wget -qO - $(jq -r '.sublime[0]' $package) | sudo apt-key add -
                     apt-get install $(jq -r '.sublime[1]' $package) >> logs/apt_install.log 2>&1
                     echo $(jq -r '.sublime[2]' $package) | sudo tee /etc/apt/sources.list.d/sublime-text.list
                     apt-get update >> logs/apt_install.log 2>&1
                     apt-get install sublime-text >> logs/apt_install.log 2>&1
+                
+                    show_status
                 fi
+
+                # elif [[ $i != 'sublime-text' ]]; then
+                #     echo -en "$grn [ installing ]$dflt $i..."
+                #     apt-get install $i -y >> logs/apt_install.log 2>&1
+
+                #     if [[ $? != 0 ]]; then
+                #         echo -en "$red [ Error ]$dflt Please review apt_install.log"
+                #         echo
+                #     else
+                #         echo -e "$grn Okay$dflt"
+                #     fi
+                # else
+                #     echo -en "$grn [ installing ]$dflt sublime-text..."
+                #     wget -qO - $(jq -r '.sublime[0]' $package) | sudo apt-key add -
+                #     apt-get install $(jq -r '.sublime[1]' $package) >> logs/apt_install.log 2>&1
+                #     echo $(jq -r '.sublime[2]' $package) | sudo tee /etc/apt/sources.list.d/sublime-text.list
+                #     apt-get update >> logs/apt_install.log 2>&1
+                #     apt-get install sublime-text >> logs/apt_install.log 2>&1
+                # fi
             done
             break;;
         N | n) echo
@@ -116,7 +170,7 @@ do
             echo " Sorry, wrong selection";;
     esac
 done
-
+echo
 echo " Run vimconfig.sh to setup vim."
 
 echo
