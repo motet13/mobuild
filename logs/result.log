@@ -12,8 +12,9 @@
  net-tools:[[32m + [39m]:apt
  inkscape:[[32m + [39m]:apt
  htop:[[32m + [39m]:apt
- code:[[32m + [39m]:snap
+ vlc:[[32m + [39m]:apt
+ arduino:[[32m + [39m]:apt
+ sublime-text:[[32m + [39m]:apt
+ cod:[[91m - [39m]:
  kcalc:[[32m + [39m]:snap
  keepassxc:[[32m + [39m]:snap
- sublime-text:[[32m + [39m]:apt
- doo-doo:[[91m - [39m]:apt

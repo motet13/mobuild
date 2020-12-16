@@ -18,9 +18,6 @@ time=$(date +%H:%M:%S)
 
 package=conf/package.json
 
-# list of wanted packages to be installed
-# may edit $package file to fit your needs
-#list=$(cat mylist.txt)
 
 echo
 echo -e " ------------------- "
@@ -35,51 +32,29 @@ echo
 
 # Check if listed package in $package is installed in the system
 
-for i in $(jq -r '.package[]' $package)
-do
-    dpkg -s $i &> /dev/null
+for pk in $(jq -r '.package[], .snap_packages[], .apt_add_repos[]' $package); do
+    dpkg-query -l $pk &> /dev/null
 
     if [ $? == 0 ]; then
-        echo -e " $i:[$grn + $dflt]:apt" >> logs/result.log
-    else
-        echo -e " $i:[$red - $dflt]:apt" >> logs/result.log
-        not_installed+=("$i")
+        echo -e " $pk:[$grn + $dflt]:apt" >> logs/result.log
+    else   
+        not_installed+=("$pk")     
     fi
 done
 
-# Snaps
-for i in $(jq -r '.snap_packages[]' $package)
-do
-    snap list $i &> /dev/null
+for pk in ${not_installed[@]}; do
+    snap list $pk &> /dev/null
 
     if [ $? == 0 ]; then
-        echo -e " $i:[$grn + $dflt]:snap" >> logs/result.log
+        echo -e " $pk:[$grn + $dflt]:snap" >> logs/result.log
+        not_installed=("${not_installed[@]/$pk}")
     else
-        echo -e " $i:[$red - $dflt]:snap" >> logs/result.log
-        not_installed+=("$i")
+        echo -e " $pk:[$red - $dflt]:" >> logs/result.log
     fi
 done
-
-# apt-add-repos
-for i in $(jq -r '.apt_add_repos[]' $package)
-do
-    dpkg -s $i &> /dev/null
-
-    if [ $? == 0 ]; then
-        echo -e " $i:[$grn + $dflt]:apt" >> logs/result.log
-    else
-        echo -e " $i:[$red - $dflt]:apt" >> logs/result.log
-        not_installed+=("$i")
-    fi
-done
-
-# for i in ${not_installed[@]}; do
-#     if [ $(jq -r '.snap_packages[]' $package | grep $i | echo $?) == 0 ]; then
-#         echo "SNAP"
-#     fi
-# done
 
 # Output result on screen
+
 column -s: -t logs/result.log
 echo
 echo
@@ -118,48 +93,59 @@ do
         Y | y) echo
             for i in ${not_installed[@]}; do
                 if [[ $(jq -r '.snap_packages[]' $package | grep $i) == $i ]]; then
-                    echo -en "$grn [ installing ]$dflt $i..."
+                    echo -en "$grn [ installing ]$dflt snap install $i..."
                     snap install $i >> logs/apt_install.log 2>&1
-                    # echo " Installing $i from snap"
 
                     show_status
 
-                elif [[ $(jq -r '.package[]' $package | grep $i) == $i ]]; then
-                    echo -en "$grn [ installing ]$dflt $i..."
-                    apt-get install $i -y >> logs/apt_install.log 2>&1
-                    # echo "Installing $i from apt"
-
-                    show_status
-
-                elif [[ $(jq -r '.apt_add_repos[]' $package | grep 'sublime-text') == 'sublime-text' ]]; then
-                    echo -en "$grn [ installing ]$dflt $i..."
-                    wget -qO - $(jq -r '.sublime[0]' $package) | sudo apt-key add -
-                    apt-get install $(jq -r '.sublime[1]' $package) >> logs/apt_install.log 2>&1
-                    echo $(jq -r '.sublime[2]' $package) | sudo tee /etc/apt/sources.list.d/sublime-text.list
-                    apt-get update >> logs/apt_install.log 2>&1
-                    apt-get install sublime-text >> logs/apt_install.log 2>&1
-                
-                    show_status
-                fi
-
-                # elif [[ $i != 'sublime-text' ]]; then
-                #     echo -en "$grn [ installing ]$dflt $i..."
+                # elif [[ $(jq -r '.package[]' $package | grep $i) == $i ]]; then
+                #     echo -en "$grn [ installing ]$dflt apt install $i..."
                 #     apt-get install $i -y >> logs/apt_install.log 2>&1
 
-                #     if [[ $? != 0 ]]; then
-                #         echo -en "$red [ Error ]$dflt Please review apt_install.log"
-                #         echo
-                #     else
-                #         echo -e "$grn Okay$dflt"
-                #     fi
-                # else
-                #     echo -en "$grn [ installing ]$dflt sublime-text..."
-                #     wget -qO - $(jq -r '.sublime[0]' $package) | sudo apt-key add -
-                #     apt-get install $(jq -r '.sublime[1]' $package) >> logs/apt_install.log 2>&1
-                #     echo $(jq -r '.sublime[2]' $package) | sudo tee /etc/apt/sources.list.d/sublime-text.list
-                #     apt-get update >> logs/apt_install.log 2>&1
-                #     apt-get install sublime-text >> logs/apt_install.log 2>&1
-                # fi
+                #     show_status
+
+                elif [[ $i == 'sublime-text' ]]; then
+                    # echo -en "adding subllime-text.list to /etc/apt/sources.list.d"
+                    echo -en "$grn [ downloading ]$dflt $(jq -r '.sublime[0]' $package)..."
+                    wget -qO - $(jq -r '.sublime[0]' $package) | sudo apt-key add -
+                    show_status
+                    echo -en "$grn [ installing ]$dflt $(jq -r '.sublime[1]' $package)..."
+                    apt-get install $(jq -r '.sublime[1]' $package) >> logs/apt_install.log 2>&1
+                    show_status
+                    echo -en "$grn [ adding repository ]$dflt $(jq -r '.sublime[2]' $package)..."
+                    echo $(jq -r '.sublime[2]' $package) | sudo tee /etc/apt/sources.list.d/sublime-text.list >> logs/apt_install.log 2>&1
+                    show_status
+                    echo -en "$grn [ updating ]$dflt ..."
+                    apt-get update >> logs/apt_install.log 2>&1
+                    show_status
+                    echo -en "$grn [ installing ]$dflt $i..."
+                    apt-get install sublime-text >> logs/apt_install.log 2>&1
+                    show_status
+
+                elif [[ $i == 'cod' ]]; then
+                    echo -en "$grn [ downloading ]$dflt $(jq -r '.vscode[0]' $package)..."
+                    # wget -qO - $(jq -r '.vscode[0]' $package) | gpg --dearmor > packages.microsoft.gpg
+                    echo "wget -qO - $(jq -r '.vscode[0]' $package) | gpg --dearmor > packages.microsoft.gpg"
+                    show_status
+                    echo -en "$grn [ installing ]$dflt $(jq -r '.vscode[1]' $package)..."
+                    # install -o root -g root -m 644 $(jq -r '.vscode[1]' $package)
+                    echo "install -o root -g root -m 644 $(jq -r '.vscode[1]' $package)"
+                    # apt-get install $(jq -r '.vscode[3]' $package)
+                    echo "apt-get install $(jq -r '.vscode[3]' $package)"
+                    show_status
+                    echo -en "$grn [ adding repository ]$dflt $(jq -r '.vscode[2]' $package)..."
+                    # sudo sh -c echo $(jq -r '.vscode[2]' $package) > /etc/apt/sources.list.d/vscode.list
+                    echo "sudo sh -c $(jq -r '.vscode[2]' $package)"
+                    show_status
+                    echo -en "$grn [ updating ]$dflt ..."
+                    # apt-get update >> logs/apt_install.log 2>&1
+                    echo "apt-get update >> logs/apt_install.log 2>&1"
+                    show_status
+                    echo -en "$grn [ installing ]$dflt $i..."
+                    # apt-get install code >> logs/apt_install.log 2>&1
+                    echo "apt-get install code >> logs/apt_install.log 2>&1"
+                    show_status
+                fi
             done
             break;;
         N | n) echo
