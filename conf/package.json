@@ -15,7 +15,8 @@
      "htop",
      "vlc",
      "arduino",
-     "code"
+     "code",
+     "apt-transport-https"
     ],
     "snap_packages":
     [

@@ -1,6 +1,6 @@
 # mobuild
 
-  First of all, I called it mobuild becuase my name is Moses and the purpose of this project is to build and configure my machine into my personal needs. I often forget to install packages to my computer so I have decided to make a script from scratch to make my life easier.
+  The purpose of this project is to build and configure your machine into your personal needs. The main script will work if you are using "apt" as your package manager. 
 
 # How it works?
 
@@ -9,9 +9,10 @@
 # Prerequisites
 
   * Linux OS
-    * I'm using Ubuntu 18.04.
+    * Ubuntu 18.04 or higher.
     * apt or apt-get
     * dpkg
+    * jq
 
 # Installing
 ```
@@ -31,8 +32,7 @@ sudo ./mobuild.sh
 ```
 You can choose wether you want to install missing packages or not.
 
-### Configuring Vim to use Vundle as plugin manager
-If you are like me who love Vim, you have got to want to keep your vim seetings ready in a fresh Linux install. I like to have something to reference to get things done quickly.
+## Configuring Vim to use Vundle as plugin manager
 
 #### You can also visit
 * [Vundle](http://github.com/VundleVim/Vundle.Vim) - the actual page for installing Vundle
