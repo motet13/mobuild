@@ -15,7 +15,7 @@
      "htop",
      "vlc",
      "arduino",
-     "cod"
+     "code"
     ],
     "snap_packages":
     [
@@ -36,7 +36,7 @@
     [
       "https://packages.microsoft.com/keys/microsoft.asc",
       "packages.microsoft.gpg /etc/apt/trusted.gpg.d/",
-      "'echo \"deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main\" > /etc/apt/sources.list.d/vscode.list'",
+      "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main",
       "apt-transport-https"
     ]
 }

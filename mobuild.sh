@@ -122,28 +122,28 @@ do
                     apt-get install sublime-text >> logs/apt_install.log 2>&1
                     show_status
 
-                elif [[ $i == 'cod' ]]; then
+                elif [[ $i == 'code' ]]; then
                     echo -en "$grn [ downloading ]$dflt $(jq -r '.vscode[0]' $package)..."
-                    # wget -qO - $(jq -r '.vscode[0]' $package) | gpg --dearmor > packages.microsoft.gpg
-                    echo "wget -qO - $(jq -r '.vscode[0]' $package) | gpg --dearmor > packages.microsoft.gpg"
+                    wget -qO - $(jq -r '.vscode[0]' $package) | gpg --dearmor > packages.microsoft.gpg
+                    #echo -en "wget -qO - $(jq -r '.vscode[0]' $package) | gpg --dearmor > packages.microsoft.gpg"
                     show_status
                     echo -en "$grn [ installing ]$dflt $(jq -r '.vscode[1]' $package)..."
-                    # install -o root -g root -m 644 $(jq -r '.vscode[1]' $package)
-                    echo "install -o root -g root -m 644 $(jq -r '.vscode[1]' $package)"
-                    # apt-get install $(jq -r '.vscode[3]' $package)
-                    echo "apt-get install $(jq -r '.vscode[3]' $package)"
+                    install -o root -g root -m 644 $(jq -r '.vscode[1]' $package)
+                    #echo -en "install -o root -g root -m 644 $(jq -r '.vscode[1]' $package)"
+                    apt-get install $(jq -r '.vscode[3]' $package) >> logs/apt_install.log 2>&1
+                    #echo -en "apt-get install $(jq -r '.vscode[3]' $package)"
                     show_status
                     echo -en "$grn [ adding repository ]$dflt $(jq -r '.vscode[2]' $package)..."
-                    # sudo sh -c echo $(jq -r '.vscode[2]' $package) > /etc/apt/sources.list.d/vscode.list
-                    echo "sudo sh -c $(jq -r '.vscode[2]' $package)"
+                    echo $(jq -r '.vscode[2]' $package) | sudo tee /etc/apt/sources.list.d/vscode.list
+                    #echo -en "sudo sh -c $(jq -r '.vscode[2]' $package)"
                     show_status
                     echo -en "$grn [ updating ]$dflt ..."
-                    # apt-get update >> logs/apt_install.log 2>&1
-                    echo "apt-get update >> logs/apt_install.log 2>&1"
+                    apt-get update >> logs/apt_install.log 2>&1
+                    #echo -en "apt-get update >> logs/apt_install.log 2>&1"
                     show_status
                     echo -en "$grn [ installing ]$dflt $i..."
-                    # apt-get install code >> logs/apt_install.log 2>&1
-                    echo "apt-get install code >> logs/apt_install.log 2>&1"
+                    apt-get install code >> logs/apt_install.log 2>&1
+                    #echo -en "apt-get install code >> logs/apt_install.log 2>&1"
                     show_status
                 fi
             done
