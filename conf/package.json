@@ -15,7 +15,7 @@
      "htop",
      "vlc",
      "arduino",
-     "code",
+     "gnome-tweaks",
      "apt-transport-https"
     ],
     "snap_packages":
@@ -25,7 +25,9 @@
     ],
     "apt_add_repos":
     [
-      "sublime-text"
+      "sublime-text",
+      "code",
+      "papirus-icon-theme"
     ],
    "sublime":
    [
@@ -39,5 +41,9 @@
       "packages.microsoft.gpg /etc/apt/trusted.gpg.d/",
       "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main",
       "apt-transport-https"
+    ],
+    "papirus":
+    [
+      "ppa:papirus/papirus"
     ]
 }

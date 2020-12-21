@@ -106,15 +106,13 @@ do
                     snap install $i >> logs/apt_install.log 2>&1
 
                     show_status
-                fi
 
-                if [[ $(jq -r '.package[]' $package | grep $i) == $i ]]; then
+                elif [[ $(jq -r '.package[]' $package | grep $i) == $i ]]; then
                     echo -en "$grn [ installing ]$dflt apt install $i..."
                     apt-get install $i -y >> logs/apt_install.log 2>&1
                     show_status
-                fi
                     
-                if [[ $(jq -r '.apt_add_repos[]' $package | grep $i) == $i ]]; then
+                elif [[ $(jq -r '.apt_add_repos[]' $package | grep $i) == $i ]]; then
                 	if [[ $i == 'sublime-text' ]]; then
                   		echo -en "$grn [ downloading ]$dflt $(jq -r '.sublime[0]' $package)..."
                     	wget -qO - $(jq -r '.sublime[0]' $package) | sudo apt-key add -
@@ -129,17 +127,16 @@ do
                     	echo -en "$grn [ installing ]$dflt $i..."
                     	apt-get install sublime-text >> logs/apt_install.log 2>&1
                     	show_status
-                    fi
 
-                	if [[ $i == 'code' ]]; then
+                	elif [[ $i == 'code' ]]; then
                 		echo -en "$grn [ downloading ]$dflt $(jq -r '.vscode[0]' $package)..."
                     	wget -qO - $(jq -r '.vscode[0]' $package) | gpg --dearmor > packages.microsoft.gpg
                     	install -o root -g root -m 644 $(jq -r '.vscode[1]' $package)
                     	show_status
-                    	echo -en "$grn [ checking deb ]$dflt $(jq -r '.vscode[2]' $package)..."
-                    	check_deb $(jq -r '.vscode[2]' $package)
-                    	echo -en "$grn [ adding repository ]$dflt $(jq -r '.vscode[3]' $package)..."
-                    	echo $(jq -r '.vscode[3]' $package) | sudo tee /etc/apt/sources.list.d/vscode.list >> logs/apt_install.log 2>&1
+                    	echo -en "$grn [ checking deb ]$dflt $(jq -r '.vscode[3]' $package)..."
+                    	check_deb $(jq -r '.vscode[3]' $package)
+                    	echo -en "$grn [ adding repository ]$dflt $(jq -r '.vscode[2]' $package)..."
+                    	echo $(jq -r '.vscode[2]' $package) | sudo tee /etc/apt/sources.list.d/vscode.list >> logs/apt_install.log 2>&1
                     	show_status
                     	echo -en "$grn [ updating ]$dflt ..."
                     	apt-get update >> logs/apt_install.log 2>&1
@@ -147,8 +144,19 @@ do
                     	echo -en "$grn [ installing ]$dflt $i..."
                     	apt-get install code >> logs/apt_install.log 2>&1
                     	show_status
+
+                    elif [[ $i == 'papirus-icon-theme' ]]; then
+                        echo -en "$grn [ adding repository ]$dflt $(jq -r '.papirus[0]' $package)..."
+                        sudo add-apt-repository -y $(jq -r '.papirus[0]' $package) >> logs/apt_install.log 2>&1
+                        show_status
+                        echo -en "$grn [ updating ]$dflt ..."
+                    	apt-get update >> logs/apt_install.log 2>&1
+                    	show_status
+                    	echo -en "$grn [ installing ]$dflt $i..."
+                    	apt-get install $i >> logs/apt_install.log 2>&1
+                    	show_status
                     fi
-                fi
+                fi 
             done
             break;;
         N | n) echo
