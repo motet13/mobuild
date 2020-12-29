@@ -173,11 +173,19 @@ do
             apt-get update >> logs/apt_install.log 2>&1
             show_status
             echo -en "$grn [ snap install ]$dflt ${snap_install[@]}..."
-            snap install ${snap_install[@]} >> logs/apt_install.log 2>&1
-            show_status
+            if [[ $(echo ${snap_install[@]} | wc -w) == 0 ]]; then
+                echo -e " Nothing to install for snap"
+            else
+                snap install ${snap_install[@]} >> logs/apt_install.log 2>&1
+                show_status
+            fi
             echo -en "$grn [ apt install ]$dflt ${apt_install[@]}..."
-            apt-get install -y ${apt_install[@]} >> logs/apt_install.log 2>&1
-            show_status
+            if [[ $(echo ${apt_install[@]} | wc -w) == 0 ]]; then
+                echo -e "Nothing to install for apt"
+            else
+                apt-get install -y ${apt_install[@]} >> logs/apt_install.log 2>&1
+                show_status
+            fi
             break;;
         N | n) echo
             echo " OK, moving on without installing..."
