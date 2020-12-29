@@ -12,6 +12,8 @@ dflt="\e[39m"
 red="\e[91m"
 gry="\e[90m"
 not_installed=()
+apt_install=()
+snap_install=()
 
 date=$(date +%y/%m/%d)
 time=$(date +%H:%M:%S)
@@ -95,24 +97,20 @@ check_deb() {
         show_status
     fi  
 }
+
 while true
 do
     read -p " Would you like to install missing package(s) [Y/n]? " answer
     case $answer in
         Y | y) echo
             for i in ${not_installed[@]}; do
-                if [[ $(jq -r '.snap_packages[]' $package | grep $i) == $i ]]; then
-                    echo -en "$grn [ installing ]$dflt snap install $i..."
-                    snap install $i >> logs/apt_install.log 2>&1
+                if [[ $(jq -r '.snap_packages[]' $package | grep -w $i) == $i ]]; then
+                    snap_install+=("$i")
 
-                    show_status
-
-                elif [[ $(jq -r '.package[]' $package | grep $i) == $i ]]; then
-                    echo -en "$grn [ installing ]$dflt apt install $i..."
-                    apt-get install $i -y >> logs/apt_install.log 2>&1
-                    show_status
+                elif [[ $(jq -r '.package[]' $package | grep -w $i) == $i ]]; then
+                    apt_install+=("$i")
                     
-                elif [[ $(jq -r '.apt_add_repos[]' $package | grep $i) == $i ]]; then
+                elif [[ $(jq -r '.apt_add_repos[]' $package | grep -w $i) == $i ]]; then
                 	if [[ $i == 'sublime-text' ]]; then
                   		echo -en "$grn [ downloading ]$dflt $(jq -r '.sublime[0]' $package)..."
                     	wget -qO - $(jq -r '.sublime[0]' $package) | sudo apt-key add -
@@ -121,12 +119,7 @@ do
                     	echo -en "$grn [ adding repository ]$dflt $(jq -r '.sublime[2]' $package)..."
                     	echo $(jq -r '.sublime[2]' $package) | sudo tee /etc/apt/sources.list.d/sublime-text.list >> logs/apt_install.log 2>&1
                     	show_status
-                    	echo -en "$grn [ updating ]$dflt ..."
-                    	apt-get update >> logs/apt_install.log 2>&1
-                    	show_status
-                    	echo -en "$grn [ installing ]$dflt $i..."
-                    	apt-get install sublime-text >> logs/apt_install.log 2>&1
-                    	show_status
+                        apt_install+=("$i")
 
                 	elif [[ $i == 'code' ]]; then
                 		echo -en "$grn [ downloading ]$dflt $(jq -r '.vscode[0]' $package)..."
@@ -138,35 +131,36 @@ do
                     	echo -en "$grn [ adding repository ]$dflt $(jq -r '.vscode[2]' $package)..."
                     	echo $(jq -r '.vscode[2]' $package) | sudo tee /etc/apt/sources.list.d/vscode.list >> logs/apt_install.log 2>&1
                     	show_status
-                    	echo -en "$grn [ updating ]$dflt ..."
-                    	apt-get update >> logs/apt_install.log 2>&1
-                    	show_status
-                    	echo -en "$grn [ installing ]$dflt $i..."
-                    	apt-get install code >> logs/apt_install.log 2>&1
-                    	show_status
+                        apt_install+=("$i")
 
                     elif [[ $i == 'papirus-icon-theme' ]]; then
                         echo -en "$grn [ adding repository ]$dflt $(jq -r '.papirus[0]' $package)..."
                         sudo add-apt-repository -y $(jq -r '.papirus[0]' $package) >> logs/apt_install.log 2>&1
                         show_status
-                        echo -en "$grn [ updating ]$dflt ..."
-                    	apt-get update >> logs/apt_install.log 2>&1
-                    	show_status
-                    	echo -en "$grn [ installing ]$dflt $i..."
-                    	apt-get install $i >> logs/apt_install.log 2>&1
-                    	show_status
+                        apt_install+=("$i")
                     fi
                 fi 
             done
             break;;
         N | n) echo
             echo " OK, moving on without installing..."
+            exit 1
             break;;
         *)
             echo
             echo " Sorry, wrong selection";;
     esac
 done
+
+echo -en "$grn [ apt-get update ]$dflt ..."
+apt-get update >> logs/apt_install.log 2>&1
+show_status
+echo -en "$grn [ snap install ]$dflt ${snap_install[@]}..."
+snap install ${snap_install[@]} >> logs/apt_install.log 2>&1
+show_status
+echo -en "$grn [ apt install ]$dflt ${apt_install[@]}..."
+apt-get install -y ${apt_install[@]} >> logs/apt_install.log 2>&1
+show_status
 echo
 echo " Run vimconfig.sh to setup vim."
 
