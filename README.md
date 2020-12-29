@@ -39,6 +39,6 @@ You can choose wether you want to install missing packages or not.
 
 ## Screenshot
 
-![screentshot](images/Screenshot%202019-08-25%20at%2010.49.20%20AM.png)
+![screentshot](images/Screenshot1.png)
 
 #### Built Year 2019
