@@ -1,10 +1,10 @@
 #!/bin/bash
 
-# if [ $UID != 0 ]; then
-#    echo "Please run as sudo!"
-#    echo "sudo $0"
-#    exit 1
-# fi
+if [ $UID != 0 ]; then
+   echo "Please run as sudo!"
+   echo "sudo $0"
+   exit 1
+fi
 
 # text output color
 grn="\e[32m"
@@ -141,26 +141,26 @@ do
                     fi
                 fi 
             done
+            # install packages
+            echo -en "$grn [ apt-get update ]$dflt ..."
+            apt-get update >> logs/apt_install.log 2>&1
+            show_status
+            echo -en "$grn [ snap install ]$dflt ${snap_install[@]}..."
+            snap install ${snap_install[@]} >> logs/apt_install.log 2>&1
+            show_status
+            echo -en "$grn [ apt install ]$dflt ${apt_install[@]}..."
+            apt-get install -y ${apt_install[@]} >> logs/apt_install.log 2>&1
+            show_status
             break;;
         N | n) echo
             echo " OK, moving on without installing..."
-            exit 1
+            exit 0
             break;;
         *)
             echo
             echo " Sorry, wrong selection";;
     esac
 done
-
-echo -en "$grn [ apt-get update ]$dflt ..."
-apt-get update >> logs/apt_install.log 2>&1
-show_status
-echo -en "$grn [ snap install ]$dflt ${snap_install[@]}..."
-snap install ${snap_install[@]} >> logs/apt_install.log 2>&1
-show_status
-echo -en "$grn [ apt install ]$dflt ${apt_install[@]}..."
-apt-get install -y ${apt_install[@]} >> logs/apt_install.log 2>&1
-show_status
 echo
 echo " Run vimconfig.sh to setup vim."
 
