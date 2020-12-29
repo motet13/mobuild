@@ -6,6 +6,36 @@ if [ $UID != 0 ]; then
    exit 1
 fi
 
+show_status() {
+    if [[ $? != 0 ]]; then
+        if [[ $1 == 'system' ]]; then
+            echo -e "$red This system is not compatible for this program.$dflt"
+            exit 1
+
+        elif [[ $1 == 'dependencies' ]]; then
+            echo -e "$red missing one or more dependencies.$dflt"
+            echo -e " Make sure you have these installed:\n apt-get \n jq \n dpkg \n snap"
+            exit 1
+        fi
+
+        echo -en "$red [ Error ]$dflt Please review apt_install.log"
+        echo
+    else
+        echo -e "$grn Okay$dflt"
+    fi    
+}
+
+check_deb() {
+    dpkg -s $1 &> /dev/null
+    if [[ $? == 0 ]]; then
+        echo -e "$grn Okay$dflt"
+    else
+        apt-get install $1 >> logs/apt_install.log 2>&1
+        show_status
+    fi  
+}
+
+
 # text output color
 grn="\e[32m"
 dflt="\e[39m"
@@ -19,6 +49,22 @@ date=$(date +%y/%m/%d)
 time=$(date +%H:%M:%S)
 
 package=conf/package.json
+
+# Check System
+echo -en " Checking system..."
+uname -a | grep 'Debian\|Ubuntu\|Lubuntu\|Xubuntu\|Kubuntu\|Mint\|Knoppix\|Deepin\|peppermint\|bodhi' >> logs/apt_install.log
+show_status system
+
+# Check dependencies
+echo -en " Checking dependencies..."
+which apt-get jq dpkg snap >> logs/apt_install.log
+show_status dependencies
+
+if [[ $? != 0 ]]; then
+    echo " missing dependency"
+    echo " Make sure you have 'apt-get', 'jq', 'dpkg', 'snap' installed."
+    exit 1
+fi
 
 
 echo
@@ -63,7 +109,7 @@ echo
 # Output not installed packages on screen if there is any
 
 if [[ $(echo ${not_installed[@]} | wc -w) == 0 ]]; then
-    echo " All packages listed in $package have already been installed into your system."
+    echo -e "$grn All packages listed in $package have already been installed into your system.$dflt"
     exit
 fi
 
@@ -78,25 +124,6 @@ done
 echo
 
 # Ask to install missing packages
-
-show_status() {
-    if [[ $? != 0 ]]; then
-        echo -en "$red [ Error ]$dflt Please review apt_install.log"
-        echo
-    else
-        echo -e "$grn Okay$dflt"
-    fi    
-}
-
-check_deb() {
-    dpkg -s $1 &> /dev/null
-    if [[ $? == 0 ]]; then
-        echo -e "$grn Okay$dflt"
-    else
-        apt-get install $1 >> logs/apt_install.log 2>&1
-        show_status
-    fi  
-}
 
 while true
 do

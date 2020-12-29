@@ -16,7 +16,8 @@
      "vlc",
      "arduino",
      "gnome-tweaks",
-     "apt-transport-https"
+     "apt-transport-https",
+     "sl"
     ],
     "snap_packages":
     [
