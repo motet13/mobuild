@@ -50,6 +50,20 @@ time=$(date +%H:%M:%S)
 
 package=conf/package.json
 
+# Options
+# Lists all pacakages in configuration file
+if [[ $1 == '-l' ]]; then
+    echo "== apt packages =="
+    jq '.apt_packages[]' $package
+    echo
+    echo "== snap packages =="
+    jq '.snap_packages[]' $package
+    echo
+    echo "== add repos =="
+    jq '.apt_add_repos[]' $package 
+    exit 0
+fi
+
 # Check System
 echo -en " Checking system..."
 uname -a | grep 'Debian\|Ubuntu\|Lubuntu\|Xubuntu\|Kubuntu\|Mint\|Knoppix\|Deepin\|peppermint\|bodhi' >> logs/apt_install.log
@@ -80,7 +94,7 @@ echo
 
 # Check if listed package in $package is installed in the system
 
-for pk in $(jq -r '.package[], .snap_packages[], .apt_add_repos[]' $package); do
+for pk in $(jq -r '.apt_packages[], .snap_packages[], .apt_add_repos[]' $package); do
     dpkg -s $pk &> /dev/null
 
     if [ $? == 0 ]; then
@@ -134,7 +148,7 @@ do
                 if [[ $(jq -r '.snap_packages[]' $package | grep -w $i) == $i ]]; then
                     snap_install+=("$i")
 
-                elif [[ $(jq -r '.package[]' $package | grep -w $i) == $i ]]; then
+                elif [[ $(jq -r '.apt_packages[]' $package | grep -w $i) == $i ]]; then
                     apt_install+=("$i")
                     
                 elif [[ $(jq -r '.apt_add_repos[]' $package | grep -w $i) == $i ]]; then
@@ -181,7 +195,7 @@ do
             fi
             echo -en "$grn [ apt install ]$dflt ${apt_install[@]}..."
             if [[ $(echo ${apt_install[@]} | wc -w) == 0 ]]; then
-                echo -e "Nothing to install for apt"
+                echo -e " Nothing to install for apt"
             else
                 apt-get install -y ${apt_install[@]} >> logs/apt_install.log 2>&1
                 show_status
